@@ -12,6 +12,7 @@ PORT = 8012
 BUFSIZE = 32768
 F_BUFSIZE = 254 # 255 - 1 (length byte)
 PATH = "./archives"
+USAGE = "use: %s HOST" % sys.argv[0]
 
 sockets = []
 
@@ -69,7 +70,12 @@ def main():
     webserver = subprocess.Popen(['python -m SimpleHTTPServer'], stdout=subprocess.PIPE, shell=True)
     print 'started HTTP server at %d' % WEBPORT
     tcp = socket.socket()
-    HOST = "localhost"
+    if len(sys.argv) == 2:
+		HOST = sys.argv[1]
+	elif len(sys.argv) == 1:
+		HOST = "localhost"
+	else:
+		print USAGE
     tcp.bind((HOST,PORT))
     tcp.listen(2)
     print 'listening at %s:%d' % (HOST,PORT)
