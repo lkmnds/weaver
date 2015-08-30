@@ -1,4 +1,3 @@
-
 import socket
 import thread
 import os
@@ -7,6 +6,7 @@ import sys
 
 VERSION = '0.0.1'
 BANNER = "Weaver v%s" % VERSION
+WEBPORT = 8000
 PORT = 8012
 BUFSIZE = 32768
 F_BUFSIZE = 254 # 255 - 1 (length byte)
@@ -30,7 +30,7 @@ def new_client(sock, client):
             print 'sending %s' % fn
             l = f.read(F_BUFSIZE)
             length = chr(len(l))
-            count = 0
+            count = ord(length)
             while l:
                 print 'Sending... [%d]' % (count)
                 sock.send(length + l)
@@ -48,6 +48,8 @@ def new_client(sock, client):
     thread.exit()
 
 def main():
+    os.system("python -m SimpleHTTPServer &")
+    print 'started HTTP server at %d' % WEBPORT
     tcp = socket.socket()
     HOST = "localhost"
     tcp.bind((HOST,PORT))

@@ -1,5 +1,6 @@
 import socket
 import time
+import sys
 
 VERSION = '0.0.1'
 BANNER = "Weaver v%s" % VERSION
@@ -37,7 +38,8 @@ def main():
             lsdirs = tcp.recv(BUFSIZE)
             _lsdirs = eval(lsdirs)
             for d in _lsdirs:
-                print '%s\n' % d
+               sys.stdout.write("%s " % d)
+            sys.stdout.write("\n")
         elif cmd[:4] == 'get ':
             fname = cmd[4:]
             print 'getting %s' % fname
@@ -48,7 +50,7 @@ def main():
             l = tcp.recv(length)
             while (l):
                 print "Receiving... [%d]" % count
-                print repr(l)
+                #print repr(l)
                 f.write(l)
                 length = ord(tcp.recv(1))
                 if chr(length) == '\x00': break
