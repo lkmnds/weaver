@@ -1,11 +1,13 @@
 import socket
 import time
 import sys
+import os
 
 VERSION = '0.0.1'
 BANNER = "Weaver v%s" % VERSION
 PORT = 8012
 BUFSIZE = 32768
+F_BUFSIZE = 254 # 255 - 1 length byte
 
 commands = [
     (['help'], 'prints help'),
@@ -40,6 +42,10 @@ def main():
             for d in _lsdirs:
                sys.stdout.write("%s " % d)
             sys.stdout.write("\n")
+        elif cmd in ['lsc']:
+            for d in os.listdir('.'):
+                sys.stdout.write("%s " % d)
+            sys.stdout.write("\n")
         elif cmd[:4] == 'get ':
             fname = cmd[4:]
             print 'getting %s' % fname
@@ -59,5 +65,23 @@ def main():
             f.write('')
             f.close()
             print 'done!'
+        elif cmd[:5] == 'send ':
+            fname = cmd[5:]
+            print 'sending %s' % fname
+            tcp.send("SEND^%s" % fname)
+            f = open(fname, 'rb')
+            l = f.read(F_BUFSIZE)
+            length = chr(len(l))
+            count = ord(length)
+            while l:
+                print 'Sending... [%d]' % (count)
+                tcp.send(length + l)
+                l = f.read(F_BUFSIZE)
+                length = chr(len(l))
+                count += ord(length)
+            print 'loop completed, sending \\x00'
+            tcp.send('\x00')
+            f.close()
+            
 
 main()

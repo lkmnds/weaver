@@ -40,6 +40,23 @@ def new_client(sock, client):
             print 'loop completed, sending \\x00'
             sock.send('\x00')
             f.close()
+        elif command[:5] == 'SEND^':
+            fname = command.split('^')[1]
+            f = open(os.path.join(PATH, fname), 'wb')
+            length = ord(sock.recv(1))
+            count = length
+            l = sock.recv(length)
+            while (l):
+                print "Receiving... [%d]" % count
+                #print repr(l)
+                f.write(l)
+                length = ord(sock.recv(1))
+                if chr(length) == '\x00': break
+                l = sock.recv(length)
+                count += length
+            f.write('')
+            f.close()
+            print 'done!'
         elif command in ['^CLOSE']:
             print 'close: %s' % cli
             break
