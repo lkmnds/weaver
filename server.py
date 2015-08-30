@@ -3,6 +3,7 @@ import thread
 import os
 import os.path
 import sys
+import subprocess
 
 VERSION = '0.0.1'
 BANNER = "Weaver v%s" % VERSION
