@@ -11,8 +11,10 @@ F_BUFSIZE = 254 # 255 - 1 length byte
 
 commands = [
     (['help'], 'prints help'),
-    (['ls', 'LS', 'list', 'LIST'], "list files on server archive"),
+    (['ls', 'list'], "list files on server archive"),
     (['exit'], 'exits connection'),
+    (['lsc'], 'list files in client'),
+    (['send'], 'send files in client to server'),
     ]
 
 def printhelp():
@@ -35,7 +37,7 @@ def main():
             tcp.send("^CLOSE")
             tcp.close()
             return 0
-        elif cmd in ['ls', 'LS', 'list', 'LIST']:
+        elif cmd in ['ls', 'list']:
             tcp.send('ls')
             lsdirs = tcp.recv(BUFSIZE)
             _lsdirs = eval(lsdirs)

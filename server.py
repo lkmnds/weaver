@@ -65,7 +65,7 @@ def new_client(sock, client):
     thread.exit()
 
 def main():
-    os.system("python -m SimpleHTTPServer &")
+    webserver = subprocess.Popen(['python -m SimpleHTTPServer'], stdout=subprocess.PIPE, shell=True)
     print 'started HTTP server at %d' % WEBPORT
     tcp = socket.socket()
     HOST = "localhost"
@@ -80,6 +80,8 @@ def main():
         print 'CTRL-C pressed, exiting.'
         for sock in sockets:
             sock.close()
+        os.system("sudo kill -9 %d" % (webserver.pid))
+        os.system("sudo kill -9 %d" % (webserver.pid+1))
         return 0
 
 if __name__=='__main__':
