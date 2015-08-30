@@ -71,11 +71,11 @@ def main():
     print 'started HTTP server at %d' % WEBPORT
     tcp = socket.socket()
     if len(sys.argv) == 2:
-		HOST = sys.argv[1]
-	elif len(sys.argv) == 1:
-		HOST = "localhost"
-	else:
-		print USAGE
+        HOST = sys.argv[1]
+    elif len(sys.argv) == 1:
+        HOST = "localhost"
+    else:
+        print USAGE
     tcp.bind((HOST,PORT))
     tcp.listen(2)
     print 'listening at %s:%d' % (HOST,PORT)
