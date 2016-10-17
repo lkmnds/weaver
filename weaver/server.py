@@ -2,7 +2,6 @@ import socket
 import _thread
 import os
 import os.path
-import sys
 import subprocess
 
 VERSION = '0.0.1'
@@ -66,13 +65,13 @@ def new_client(sock, client):
     sock.close()
     _thread.exit()
 
-def main():
+def main_loop(args):
     webserver = subprocess.Popen(['python -m SimpleHTTPServer'], stdout=subprocess.PIPE, shell=True)
     print('started HTTP server at %d' % WEBPORT)
     tcp = socket.socket()
-    if len(sys.argv) == 2:
+    if len(args) == 2:
         HOST = sys.argv[1]
-    elif len(sys.argv) == 1:
+    elif len(args) == 1:
         HOST = "localhost"
     else:
         print(USAGE)
@@ -90,4 +89,5 @@ def main():
         return 0
 
 if __name__=='__main__':
-    sys.exit(main())
+    import sys
+    sys.exit(main_loop(sys.argv))

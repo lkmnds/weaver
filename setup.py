@@ -7,5 +7,6 @@ setup(
     author='Luna (Lukas) Mendes',
     author_email='weaver.lkmnds@mailhero.io',
     url='https://github.com/lkmnds/weaver',
-    description='A simple fileserver for simple needs'
+    description='A simple fileserver for simple needs',
+    license='MIT'
 )
