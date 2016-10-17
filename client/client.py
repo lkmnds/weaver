@@ -21,7 +21,7 @@ def printhelp():
     for c in commands:
         cmds = c[0]
         helptext = c[1]
-        print '%s -- %s' % (cmds.join(' or '), helptext)
+        print '%s -- %s' % (' or '.join(cmds), helptext)
 
 def main():
     tcp = socket.socket()
@@ -84,6 +84,6 @@ def main():
             print 'loop completed, sending \\x00'
             tcp.send('\x00')
             f.close()
-            
+
 
 main()

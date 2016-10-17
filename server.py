@@ -87,10 +87,7 @@ def main():
         print 'CTRL-C pressed, exiting.'
         for sock in sockets:
             sock.close()
-        os.system("sudo kill -9 %d" % (webserver.pid))
-        os.system("sudo kill -9 %d" % (webserver.pid+1))
         return 0
 
 if __name__=='__main__':
     sys.exit(main())
-
