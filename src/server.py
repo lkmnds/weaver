@@ -4,14 +4,18 @@ import os
 import os.path
 import subprocess
 
+import common
+
 VERSION = '0.0.1'
-BANNER = "Weaver v%s" % VERSION
+BANNER = "Weaver Server v%s" % VERSION
+
 WEBPORT = 8000
-PORT = 8012
-BUFSIZE = 32768
+PORT = common.PROTO_PORT
+
+BUFSIZE = common.BUFFER_SIZE
 F_BUFSIZE = 254 # 255 - 1 (length byte)
-PATH = "./archives"
-USAGE = "use: %s HOST" % sys.argv[0]
+
+weaverfile_config = common.ConfigFile()
 
 sockets = []
 
@@ -66,15 +70,23 @@ def new_client(sock, client):
     _thread.exit()
 
 def main_loop(args):
+    global weaverfile_config
+
+    with open('./Weaverfile', 'r') as weaverfile:
+        weaverfile_config.initialize(weaverfile)
+
     webserver = subprocess.Popen(['python -m SimpleHTTPServer'], stdout=subprocess.PIPE, shell=True)
+
     print('started HTTP server at %d' % WEBPORT)
+
     tcp = socket.socket()
     if len(args) == 2:
         HOST = sys.argv[1]
     elif len(args) == 1:
         HOST = "localhost"
     else:
-        print(USAGE)
+        print('use: %s HOST' % args[0])
+
     tcp.bind((HOST,PORT))
     tcp.listen(2)
     print('listening at %s:%d' % (HOST,PORT))
