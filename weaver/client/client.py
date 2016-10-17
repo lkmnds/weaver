@@ -21,16 +21,16 @@ def printhelp():
     for c in commands:
         cmds = c[0]
         helptext = c[1]
-        print '%s -- %s' % (' or '.join(cmds), helptext)
+        print('%s -- %s' % (' or '.join(cmds), helptext))
 
 def main():
     tcp = socket.socket()
-    print BANNER
-    HOST = raw_input("IP: ")
+    print(BANNER)
+    HOST = input("IP: ")
     tcp.connect((HOST,PORT))
-    print tcp.recv(BUFSIZE)
+    print(tcp.recv(BUFSIZE))
     while True:
-        cmd = raw_input('@%s$ ' % HOST)
+        cmd = input('@%s$ ' % HOST)
         if cmd == 'help':
             printhelp()
         elif cmd == 'exit':
@@ -50,14 +50,14 @@ def main():
             sys.stdout.write("\n")
         elif cmd[:4] == 'get ':
             fname = cmd[4:]
-            print 'getting %s' % fname
+            print('getting %s' % fname)
             tcp.send("GET^%s" % fname)
             f = open(fname, 'wb')
             length = ord(tcp.recv(1))
             count = length
             l = tcp.recv(length)
             while (l):
-                print "Receiving... [%d]" % count
+                print("Receiving... [%d]" % count)
                 #print repr(l)
                 f.write(l)
                 length = ord(tcp.recv(1))
@@ -66,22 +66,22 @@ def main():
                 count += length
             f.write('')
             f.close()
-            print 'done!'
+            print('done!')
         elif cmd[:5] == 'send ':
             fname = cmd[5:]
-            print 'sending %s' % fname
+            print('sending %s' % fname)
             tcp.send("SEND^%s" % fname)
             f = open(fname, 'rb')
             l = f.read(F_BUFSIZE)
             length = chr(len(l))
             count = ord(length)
             while l:
-                print 'Sending... [%d]' % (count)
+                print('Sending... [%d]' % (count))
                 tcp.send(length + l)
                 l = f.read(F_BUFSIZE)
                 length = chr(len(l))
                 count += ord(length)
-            print 'loop completed, sending \\x00'
+            print('loop completed, sending \\x00')
             tcp.send('\x00')
             f.close()
 

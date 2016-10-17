@@ -1,5 +1,5 @@
 import socket
-import thread
+import _thread
 import os
 import os.path
 import sys
@@ -23,23 +23,23 @@ def new_client(sock, client):
     while True:
         command = sock.recv(BUFSIZE)
         if command in ['ls', 'LS', 'list', 'LIST']:
-            print 'list: %s' % cli
+            print('list: %s' % cli)
             k = os.listdir(PATH)
             sock.send(str(k))
         elif command[:4] == 'GET^':
             fn = command.split('^')[1]
             f = open(os.path.join(PATH, fn), 'rb')
-            print 'sending %s' % fn
+            print('sending %s' % fn)
             l = f.read(F_BUFSIZE)
             length = chr(len(l))
             count = ord(length)
             while l:
-                print 'Sending... [%d]' % (count)
+                print('Sending... [%d]' % (count))
                 sock.send(length + l)
                 l = f.read(F_BUFSIZE)
                 length = chr(len(l))
                 count += ord(length)
-            print 'loop completed, sending \\x00'
+            print('loop completed, sending \\x00')
             sock.send('\x00')
             f.close()
         elif command[:5] == 'SEND^':
@@ -49,7 +49,7 @@ def new_client(sock, client):
             count = length
             l = sock.recv(length)
             while (l):
-                print "Receiving... [%d]" % count
+                print("Receiving... [%d]" % count)
                 #print repr(l)
                 f.write(l)
                 length = ord(sock.recv(1))
@@ -58,33 +58,33 @@ def new_client(sock, client):
                 count += length
             f.write('')
             f.close()
-            print 'done!'
+            print('done!')
         elif command in ['^CLOSE']:
-            print 'close: %s' % cli
+            print('close: %s' % cli)
             break
     sockets.remove(sock)
     sock.close()
-    thread.exit()
+    _thread.exit()
 
 def main():
     webserver = subprocess.Popen(['python -m SimpleHTTPServer'], stdout=subprocess.PIPE, shell=True)
-    print 'started HTTP server at %d' % WEBPORT
+    print('started HTTP server at %d' % WEBPORT)
     tcp = socket.socket()
     if len(sys.argv) == 2:
         HOST = sys.argv[1]
     elif len(sys.argv) == 1:
         HOST = "localhost"
     else:
-        print USAGE
+        print(USAGE)
     tcp.bind((HOST,PORT))
     tcp.listen(2)
-    print 'listening at %s:%d' % (HOST,PORT)
+    print('listening at %s:%d' % (HOST,PORT))
     try:
         while True:
             con, cli = tcp.accept()
-            thread.start_new_thread(new_client, (con, cli))
+            _thread.start_new_thread(new_client, (con, cli))
     except KeyboardInterrupt:
-        print 'CTRL-C pressed, exiting.'
+        print('CTRL-C pressed, exiting.')
         for sock in sockets:
             sock.close()
         return 0
